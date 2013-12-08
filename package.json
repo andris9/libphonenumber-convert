@@ -1,6 +1,6 @@
 {
   "name": "libphonenumber-convert",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Convert libphonenumber XML to JavaScript",
   "main": "index.js",
   "dependencies": {
