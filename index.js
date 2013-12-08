@@ -11,31 +11,22 @@ var parseString = require('xml2js').parseString,
  * @param {Function} callback Callback function with the error object and JavaScript file
  */
 module.exports = function(xmlUrl, callback){
-    fetchAndConvert(xmlUrl, callback);
-};
-
-module.exports.convert = convert;
-
-function fetchAndConvert(xmlUrl, callback){
-    fetchXmlData(xmlUrl, function(err, data){
+    request(xmlUrl, function(err, xml){
         if(err){
             return callback(err);
         }
-        convert(data, callback);
+        convert(xml, callback);
     });
-}
+};
 
-function formatJS(data){
-    return "/* Automatically generated. Do not edit. */\n"+
-           "var PHONE_NUMBER_META_DATA = " + JSON.stringify(data) + ";\n"
-}
+module.exports.convert = convert;
 
 function convert(xml, callback){
     parseString(xml, function(err, result){
         if(err){
             return callback(err);
         }
-        convertXml(result, function(err, data){
+        convertTerritories(result, function(err, data){
             if(err){
                 return callback(err);
             }
@@ -44,7 +35,11 @@ function convert(xml, callback){
     });
 }
 
-function convertXml(data, callback){
+function nodeToText(str){
+    return (str || "").toString().replace(/\s/g, "") || null;
+}
+
+function convertTerritories(data, callback){
     var metadata = {},
         territories = [].concat(data && data.phoneNumberMetadata && data.phoneNumberMetadata.territories || []).shift(),
         territoryArray = territories && territories.territory;
@@ -90,20 +85,6 @@ function convertXml(data, callback){
     callback(null, metadata);
 }
 
-function fetchXmlData(xmlUrl, callback){
-    request(xmlUrl, function(err, xml){
-        if(err){
-            return callback(err);
-        }
-
-        callback(null, xml);
-    });
-}
-
-function nodeToText(str){
-    return (str || "").toString().replace(/\s/g, "") || null;
-}
-
 function formatTerritory(territory){
     var res = [],
         generalDesc = [].concat(territory.generalDesc || []).shift();
@@ -135,4 +116,9 @@ function formatTerritory(territory){
     }));
 
     return res;
+}
+
+function formatJS(data){
+    return "/* Automatically generated. Do not edit. */\n"+
+           "var PHONE_NUMBER_META_DATA = " + JSON.stringify(data) + ";\n";
 }
