@@ -80,6 +80,9 @@ function convertTerritories(data, callback){
         metadata[countryCode] = metadata[countryCode].map(function(country){
             return JSON.stringify(country);
         });
+        if(metadata[countryCode].length == 1){
+            metadata[countryCode] = metadata[countryCode].shift();
+        }
     });
 
     callback(null, metadata);
