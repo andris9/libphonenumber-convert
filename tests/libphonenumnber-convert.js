@@ -83,9 +83,9 @@ module.exports["Convert to JS"] = {
             ]
         ];
 
-        test.equal(this.PHONE_NUMBER_META_DATA["372"].length, 1);
+        test.equal(typeof this.PHONE_NUMBER_META_DATA["372"], "string");
 
-        test.deepEqual(JSON.parse(this.PHONE_NUMBER_META_DATA["372"][0]), expected);
+        test.deepEqual(JSON.parse(this.PHONE_NUMBER_META_DATA["372"]), expected);
         test.done();
     }
 
@@ -107,7 +107,7 @@ module.exports["Download and Convert"] = {
     convert: function(test){
         libphonenumberConvert("http://localhost:" + HTTP_PORT + "/", function(err, js){
             test.ifError(err);
-            test.equal(js["372"].length, 1);
+            test.equal(typeof js["372"], "string");
             test.done();
         });
     }
